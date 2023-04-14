@@ -10,7 +10,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
+import news.my.kotlin.adapter.AllNewsAdapter
 import news.my.kotlin.databinding.FragmentHomeBinding
 import news.my.kotlin.utils.ApiStatus
 
@@ -20,6 +22,7 @@ class AllNewsFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
     private val allNewViewModel by viewModels<AllNewsViewModel>()
+    private val newsAdapter by lazy { AllNewsAdapter() }
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -38,7 +41,13 @@ class AllNewsFragment : Fragment() {
         allNewViewModel.newsAsLiveData.observe(viewLifecycleOwner) { result ->
             when (result?.status) {
                 ApiStatus.SUCCESS -> {
-                    result.data?.let { Log.e(TAG, it.toString()) }
+                    newsAdapter.differ.submitList(result.data?.articles)
+                    binding.apply {
+                        topHeadlinesRecyclerView.apply {
+                            layoutManager = LinearLayoutManager(requireContext())
+                            adapter = newsAdapter
+                        }
+                    }
                 }
 
                 ApiStatus.ERROR -> {
