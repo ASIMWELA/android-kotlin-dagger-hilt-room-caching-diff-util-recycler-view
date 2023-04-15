@@ -12,6 +12,13 @@ interface NewsApi {
     suspend fun getAllNews(
         @Query("language") language: String = "en",
         @Query("country") country:String="us",
+        @Query("kh") apiKey: String = API_KEY
+    ): Response<NewsResponse>
+
+    @GET("top-headlines")
+    suspend fun getAllNewsFlow(
+        @Query("language") language: String = "en",
+        @Query("country") country:String="us",
         @Query("apiKey") apiKey: String = API_KEY
     ): Response<NewsResponse>
 }

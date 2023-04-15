@@ -38,9 +38,10 @@ class AllNewsFragment : Fragment() {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        allNewViewModel.newsAsLiveData.observe(viewLifecycleOwner) { result ->
-            when (result?.status) {
+        allNewViewModel.newsLiveData.observe(viewLifecycleOwner) { result ->
+            when (result.status) {
                 ApiStatus.SUCCESS -> {
+                    hideLoadingProgress()
                     newsAdapter.differ.submitList(result.data?.articles)
                     binding.apply {
                         topHeadlinesRecyclerView.apply {
@@ -51,18 +52,16 @@ class AllNewsFragment : Fragment() {
                 }
 
                 ApiStatus.ERROR -> {
+                    hideLoadingProgress()
                     result.message?.let { Log.e(TAG, it) }
                 }
 
                 ApiStatus.LOADING -> {
-
+                    showLoadingProgress()
                 }
-                else -> {
 
-                }
             }
         }
-
 
         return root
     }
@@ -70,5 +69,13 @@ class AllNewsFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun showLoadingProgress() {
+        binding.loadingAllNewsProgressBar.visibility = View.VISIBLE
+    }
+
+    private fun hideLoadingProgress() {
+        binding.loadingAllNewsProgressBar.visibility = View.GONE
     }
 }

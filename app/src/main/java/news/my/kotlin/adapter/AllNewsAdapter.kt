@@ -7,6 +7,8 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
+import news.my.kotlin.R
 import news.my.kotlin.databinding.ArticleItemBinding
 import news.my.kotlin.model.Article
 
@@ -42,14 +44,15 @@ class AllNewsAdapter : RecyclerView.Adapter<AllNewsAdapter.ViewHolder>() {
     val differ = AsyncListDiffer(this, differCallback)
 
     inner class ViewHolder() : RecyclerView.ViewHolder(binding.root) {
+        @SuppressLint("CheckResult")
         fun setData(item: Article) {
             binding.apply {
                 tvArticleDescription.text = item.description
                 tvArticleTitle.text = item.title
-                item.urlToImage?.let {
+                  item.urlToImage?.let {
                     Glide.with(binding.root.context).load(it).centerCrop().into(ivArticleImage)
                 }
-            }
+                  }
         }
     }
 
