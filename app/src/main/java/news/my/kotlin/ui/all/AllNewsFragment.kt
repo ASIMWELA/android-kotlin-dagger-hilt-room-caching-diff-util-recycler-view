@@ -11,6 +11,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import news.my.kotlin.adapter.AllNewsAdapter
 import news.my.kotlin.databinding.FragmentHomeBinding
@@ -53,7 +54,7 @@ class AllNewsFragment : Fragment() {
 
                 ApiStatus.ERROR -> {
                     hideLoadingProgress()
-                    result.data?.articles?.let{
+                    result.data?.articles?.let {
                         newsAdapter.differ.submitList(it)
                         binding.apply {
                             topHeadlinesRecyclerView.apply {
@@ -61,6 +62,12 @@ class AllNewsFragment : Fragment() {
                                 adapter = newsAdapter
                             }
                         }
+
+                        Snackbar.make(
+                            binding.allNewsbaseView,
+                            "Viewing cached data",
+                            Snackbar.LENGTH_SHORT
+                        ).show()
                     }
                     result.message?.let { Log.e(TAG, it) }
                 }

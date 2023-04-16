@@ -1,11 +1,9 @@
 package news.my.kotlin.repository
 
-import android.util.Log
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import news.my.kotlin.db.ArticleDao
 import news.my.kotlin.db.EntityMapper
-import news.my.kotlin.model.Article
 import news.my.kotlin.model.NewsResponse
 import news.my.kotlin.ui.network.NewsApi
 import news.my.kotlin.utils.ApiResult
