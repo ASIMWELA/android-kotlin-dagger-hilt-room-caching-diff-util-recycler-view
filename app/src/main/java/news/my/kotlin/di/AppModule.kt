@@ -4,6 +4,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import news.my.kotlin.db.ArticleDao
 import news.my.kotlin.repository.NewsRepository
 import news.my.kotlin.ui.network.NewsApi
 import news.my.kotlin.utils.Constants.Companion.BASE_URL
@@ -27,7 +28,7 @@ object AppModule {
     @Provides
     @Singleton
     fun providesNewsRepository(
-        newsApi: NewsApi
-    ): NewsRepository = NewsRepository(newsApi)
+        newsApi: NewsApi, newsDao: ArticleDao
+    ): NewsRepository = NewsRepository(newsApi, newsDao)
 
 }

@@ -49,10 +49,10 @@ class AllNewsAdapter : RecyclerView.Adapter<AllNewsAdapter.ViewHolder>() {
             binding.apply {
                 tvArticleDescription.text = item.description
                 tvArticleTitle.text = item.title
-                  item.urlToImage?.let {
+                item.urlToImage?.let {
                     Glide.with(binding.root.context).load(it).centerCrop().into(ivArticleImage)
                 }
-                  }
+            }
         }
     }
 

@@ -14,9 +14,9 @@ sealed class ApiResult <out T> (val status: ApiStatus, val data: T?, val message
         message = null
     )
 
-    data class Error(val exception: String): ApiResult<Nothing>(
+    data class Error<out R>(val exception: String, val _data: R?): ApiResult<R>(
         status = ApiStatus.ERROR,
-        data = null,
+        data = _data,
         message = exception
     )
 
