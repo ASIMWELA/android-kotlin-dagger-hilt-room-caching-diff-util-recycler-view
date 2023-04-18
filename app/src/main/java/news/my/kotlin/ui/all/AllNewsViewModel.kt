@@ -1,5 +1,7 @@
 package news.my.kotlin.ui.all
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -37,6 +39,9 @@ class AllNewsViewModel @Inject constructor(private val newsRepository: NewsRepos
 
 
     }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    val networkBoundNews = newsRepository.getArticlesNetworkBound().asLiveData()
 
     val newsAsLiveData = flow {
         val response = newsRepository.getAllNews()

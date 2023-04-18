@@ -24,11 +24,11 @@ object AppModule {
             .build()
             .create(NewsApi::class.java)
     }
-
-    @Provides
-    @Singleton
-    fun providesNewsRepository(
-        newsApi: NewsApi, newsDao: ArticleDao
-    ): NewsRepository = NewsRepository(newsApi, newsDao)
+//
+//    @Provides
+//    @Singleton
+//    fun providesNewsRepository(
+//        newsApi: NewsApi, newsDao: ArticleDao
+//    ): NewsRepository = NewsRepository(newsApi, newsDao)
 
 }

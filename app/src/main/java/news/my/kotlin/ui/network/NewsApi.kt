@@ -22,4 +22,11 @@ interface NewsApi {
         @Query("apiKey") apiKey: String = API_KEY
     ): Response<NewsResponse>
 
+    @GET("top-headlines")
+    suspend fun getAllNewsNetworkBound(
+        @Query("language") language: String = "en",
+        @Query("country") country:String="us",
+        @Query("") apiKey: String = API_KEY
+    ): NewsResponse
+
 }
