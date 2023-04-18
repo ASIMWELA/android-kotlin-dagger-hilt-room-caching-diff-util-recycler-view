@@ -29,48 +29,48 @@ class NewsRepository @Inject constructor(private val newsApi: NewsApi,
 
     private val articleDao = articlesDatabase.getArticlesDao();
 
-    suspend fun getAllNewsFLow(): Flow<ApiResult<NewsResponse>> = flow {
-        try {
-            val response = newsApi.getAllNewsFlow()
-            if (response.isSuccessful) {
-                val articles = response.body()?.articles
-                val articlesEntities = articles?.let { EntityMapper.fromModelList(it) }
-                articleDao.deleteArticles()
-                articlesEntities?.let { articleDao.insertArticles(it) }
-                emit(ApiResult.Success(response.body()))
-            } else {
-                val errorMessage = response.errorBody()!!.string()
-                response.errorBody()!!.close()
-
-                articleDao.getArticles().collect {
-                    val articles = EntityMapper.fromEntityList(it)
-                    val createdResponse = NewsResponse(articles, "error", articles.count())
-                    emit(ApiResult.Error(errorMessage, createdResponse))
-                }
-
-            }
-        } catch (e: Exception) {
-            if (e is UnknownHostException) {
-                articleDao.getArticles().collect {
-                    val articles = EntityMapper.fromEntityList(it)
-                    val response = NewsResponse(articles, "error", articles.count())
-                    emit(ApiResult.Error("Connection problem, viewing cached data", response))
-                }
-
-            } else {
-                articleDao.getArticles().collect {
-                    val articles = EntityMapper.fromEntityList(it)
-                    val response = NewsResponse(articles, "error", articles.count())
-                    e.message?.let { it1 -> ApiResult.Error(it1, response) }
-                        ?.let { it2 -> emit(it2) }
-                }
-            }
-
-
-        }
-
-
-    }
+//    suspend fun getAllNewsFLow(): Flow<ApiResult<NewsResponse>> = flow {
+//        try {
+//            val response = newsApi.getAllNewsFlow()
+//            if (response.isSuccessful) {
+//                val articles = response.body()?.articles
+//                val articlesEntities = articles?.let { EntityMapper.fromModelList(it) }
+//                articleDao.deleteArticles()
+//                articlesEntities?.let { articleDao.insertArticles(it) }
+//                emit(ApiResult.Success(response.body()))
+//            } else {
+//                val errorMessage = response.errorBody()!!.string()
+//                response.errorBody()!!.close()
+//
+//                articleDao.getArticles().collect {
+//                    val articles = EntityMapper.fromEntityList(it)
+//                    val createdResponse = NewsResponse(articles, "error", articles.count())
+//                    emit(ApiResult.Error(errorMessage, createdResponse))
+//                }
+//
+//            }
+//        } catch (e: Exception) {
+//            if (e is UnknownHostException) {
+//                articleDao.getArticles().collect {
+//                    val articles = EntityMapper.fromEntityList(it)
+//                    val response = NewsResponse(articles, "error", articles.count())
+//                    emit(ApiResult.Error("Connection problem, viewing cached data", response))
+//                }
+//
+//            } else {
+//                articleDao.getArticles().collect {
+//                    val articles = EntityMapper.fromEntityList(it)
+//                    val response = NewsResponse(articles, "error", articles.count())
+//                    e.message?.let { it1 -> ApiResult.Error(it1, response) }
+//                        ?.let { it2 -> emit(it2) }
+//                }
+//            }
+//
+//
+//        }
+//
+//
+//    }
 
     @RequiresApi(Build.VERSION_CODES.M)
     fun getArticlesNetworkBound() = networkBoundResource(

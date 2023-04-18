@@ -17,11 +17,14 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.map
 import news.my.kotlin.adapter.AllNewsAdapter
 import news.my.kotlin.databinding.FragmentHomeBinding
 import news.my.kotlin.db.EntityMapper
 import news.my.kotlin.model.ApiErrorBody
+import news.my.kotlin.utils.ApiResult
 import news.my.kotlin.utils.ApiStatus
+import retrofit2.HttpException
 
 @AndroidEntryPoint
 class AllNewsFragment : Fragment() {
@@ -55,16 +58,30 @@ class AllNewsFragment : Fragment() {
 
                 ApiStatus.ERROR -> {
                     hideLoadingProgress()
-                    val errorBody = response.message!!
-                    val messageBody = Gson().fromJson(errorBody, ApiErrorBody::class.java)
-                    val actualErrorMessage = messageBody.message
-                    Snackbar.make(
-                        binding.allNewsbaseView,
-                        "Error: $actualErrorMessage\nViewing cached data",
-                        Snackbar.LENGTH_LONG
-                    ).show()
-                }
+                    when (val errorBody = response.error!!) {
+                        is HttpException -> {
+                            val message = errorBody.response()?.errorBody()?.string()
+                            val messageBody = Gson().fromJson(message, ApiErrorBody::class.java)
+                            val actualErrorMessage = messageBody.message
+                            Snackbar.make(
+                                binding.allNewsbaseView,
+                                "Error: $actualErrorMessage\nViewing cached data",
+                                Snackbar.LENGTH_LONG
+                            ).show()
 
+                        }
+                        else -> {
+                            val message = errorBody.message ?: "Something went wrong"
+                            Snackbar.make(
+                                binding.allNewsbaseView,
+                                "Error: $message\nViewing cached data",
+                                Snackbar.LENGTH_LONG
+                            ).show()
+                        }
+
+
+                    }
+                }
 
                 ApiStatus.LOADING -> {
                     showLoadingProgress()

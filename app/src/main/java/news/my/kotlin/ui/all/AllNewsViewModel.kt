@@ -24,40 +24,24 @@ class AllNewsViewModel @Inject constructor(private val newsRepository: NewsRepos
 
     val articles: LiveData<ApiResult<NewsResponse>>
         get() = _newsArticles
-
-    init {
-        getNewsFlow()
-    }
-
-
-    private fun getNewsFlow() = viewModelScope.launch {
-       newsRepository.getAllNewsFLow().onStart { emit(ApiResult.Loading(true))}.flowOn(
-           Dispatchers.IO
-       ).collect{
-            _newsArticles.value = it
-       }
+//
+//    init {
+//        getNewsFlow()
+//    }
 
 
-    }
+//    private fun getNewsFlow() = viewModelScope.launch {
+//       newsRepository.getAllNewsFLow().onStart { emit(ApiResult.Loading(true))}.flowOn(
+//           Dispatchers.IO
+//       ).collect{
+//            _newsArticles.value = it
+//       }
+//
+//
+//    }
 
     @RequiresApi(Build.VERSION_CODES.M)
     val networkBoundNews = newsRepository.getArticlesNetworkBound().asLiveData()
-
-    val newsAsLiveData = flow {
-        val response = newsRepository.getAllNews()
-        if (response.isSuccessful) {
-            emit(ApiResult.Success(response.body()))   // 2. Success State
-        } else {
-            val errorMsg = response.errorBody()?.string()
-            response.errorBody()
-                ?.close()  // remember to close it after getting the stream of error body
-            emit(errorMsg?.let { ApiResult.Error(it, null) })  // 3. Error State
-        }
-
-    }.onStart {
-        emit(ApiResult.Loading(true))
-    }.flowOn(Dispatchers.IO)
-        .asLiveData()
 
 
 }

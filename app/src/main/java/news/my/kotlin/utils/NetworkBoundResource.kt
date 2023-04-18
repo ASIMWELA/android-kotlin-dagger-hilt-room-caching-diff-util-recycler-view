@@ -64,17 +64,9 @@ inline fun <ResultType, RequestType> networkBoundResource(
 
         } catch (throwable: Throwable) {
 
-            when(throwable){
-                is HttpException-> {
-                    val message = throwable.response()?.errorBody()?.string()
-                    val errorMessage = message ?: "Something went wrong"
-                    query().map { ApiResult.Error(errorMessage, it) }
-                }
-                else -> {
-                    val errorMessage = throwable.message ?: "Something went wrong"
-                    query().map { ApiResult.Error(errorMessage, it) }
-                }
-            }
+            query().map { ApiResult.Error(throwable, it) }
+
+            
 
             //Dispatch any error emitted to the UI, plus data emmited from the Database
 
